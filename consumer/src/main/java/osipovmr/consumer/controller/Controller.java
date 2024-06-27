@@ -12,6 +12,6 @@ public class Controller {
 
     @KafkaListener(topics = "osipov")
     public void listen(String message) {
-        log.info("Получено сообщение из топика 'processOrder' {}.", message);
+        log.info("Получено сообщение из топика 'osipov' {}.", message);
     }
 }

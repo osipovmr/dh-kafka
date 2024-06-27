@@ -1,0 +1,2 @@
+docker image build --platform linux/amd64 -t osipovmr/dh-kafka-producer:1 .
+docker image build --platform linux/amd64 -t osipovmr/dh-kafka-consumer:1 .

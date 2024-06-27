@@ -5,38 +5,39 @@ networks:
     external: true
 
 services:
-  #  producer:
-  #    image: osipovmr/dh-kafka-producer:1
-  #    container_name: kafka-producer
-  #    ports:
-  #      - "8080:8080"
-  #    networks:
-  #      - dh
-  #
-  #  consumer:
-  #    image: osipovmr/dh-kafka-consumer:1
-  #    container_name: kafka-consumer
-  #    ports:
-  #      - "8081:8081"
-  #    networks:
-  #      - dh
-  #    depends_on:
-  #      - producer
-  #      - postgres
-  #
-  #  postgres:
-  #    networks:
-  #      - dh
-  #    image: postgres:16
-  #    container_name: postgres
-  #    environment:
-  #      POSTGRES_DB: "dh"
-  #      POSTGRES_USER: "admin"
-  #      POSTGRES_PASSWORD: "password"
-  #    ports:
-  #      - "5432:5432"
-  #    volumes:
-  #      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  producer:
+    image: osipovmr/dh-kafka-producer:1
+    container_name: kafka-producer
+    ports:
+      - "8081:8081"
+    networks:
+      - dh
+
+  consumer:
+    image: osipovmr/dh-kafka-consumer:1
+    container_name: kafka-consumer
+    ports:
+      - "8082:8082"
+    networks:
+      - dh
+    depends_on:
+      - postgres
+      - kafka
+
+  postgres:
+    networks:
+      - dh
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: "dh"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "password"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   kafka:
     image: apache/kafka:3.7.0
