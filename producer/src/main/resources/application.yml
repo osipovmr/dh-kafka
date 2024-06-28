@@ -8,3 +8,4 @@ spring:
     bootstrap-servers: "kafka:9092"
 number: 1000
 partitions: 1
+batch: 57000

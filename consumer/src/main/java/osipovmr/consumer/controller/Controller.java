@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import osipovmr.consumer.model.Message;
 import osipovmr.consumer.repository.MessageRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class Controller {
 
     private final MessageRepository repository;
+    private final List<Message> messages = new ArrayList<>();
 
     @KafkaListener(topics = "osipov")
     public void listen(@Header(KafkaHeaders.OFFSET) long offset,
@@ -29,12 +32,17 @@ public class Controller {
                 key,
                 message);
         if (partition == 1) {
-            repository.save(Message.builder()
+            Message entity = Message.builder()
                     .uuid(key)
                     .offset(offset)
                     .partition(partition)
                     .message(message)
-                    .build());
+                    .build();
+            messages.add(entity);
+            if (messages.size() > 1000) {
+                repository.saveAll(messages);
+                messages.clear();
+            }
         }
     }
 }

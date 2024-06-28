@@ -26,6 +26,8 @@ public class KafkaConfig {
     private String bootstrapServers;
     @Value(value = "${partitions}")
     private int partitions;
+    @Value(value = "${batch}")
+    private int batch;
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
@@ -33,6 +35,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.BATCH_SIZE_CONFIG, batch);
         return new DefaultKafkaProducerFactory<>(props);
     }
 
