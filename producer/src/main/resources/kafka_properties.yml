@@ -1,5 +1,0 @@
-producer:
-  propertiesMap:
-    bootstrap.servers: kafka:9092
-    client.id:
-    group.id:

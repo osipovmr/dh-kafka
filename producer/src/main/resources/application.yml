@@ -3,5 +3,6 @@ server:
 logging:
   level:
     kafka: off
-properties:
-  classpath: "classpath:"
+spring:
+  kafka:
+    bootstrap-servers: "kafka:9092"

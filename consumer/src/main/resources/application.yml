@@ -5,8 +5,10 @@ spring:
     url: jdbc:postgresql://postgres:5432/dh
     username: admin
     password: password
+  kafka:
+    bootstrap-servers: "kafka:9092"
+    consumer:
+      group-id: "dh-group-1"
 logging:
   level:
     kafka: off
-properties:
-  classpath: "classpath:"

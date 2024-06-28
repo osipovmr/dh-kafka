@@ -1,6 +1,0 @@
-consumer:
-  propertiesMap:
-    bootstrap.servers: "kafka:9092"
-    auto-offset-reset: earliest
-    client.id: "dh-client-1"
-    group.id: "dh-osipov"
