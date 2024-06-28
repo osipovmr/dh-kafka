@@ -1,0 +1,28 @@
+https://docs.confluent.io/platform/current/installation/configuration/consumer-configs.html
+
+Подключение к брокерам
+- bootstrap.servers: Список пар хост/порт для установки первоначального соединения с кластером Kafka.
+
+Группа консюмеров
+- group.id: Уникальный идентификатор группы консюмеров, к которой принадлежит данный консюмер.
+
+- auto.offset.reset: Поведение по умолчанию, когда нет начального смещения в Kafka или если текущее смещение не существует на сервере.
+Допустимые значения: "earliest", "latest", "none".
+
+-- earliest: automatically reset the offset to the earliest offset
+-- latest: automatically reset the offset to the latest offset
+-- none: throw exception to the consumer if no previous offset is found for the consumer’s group
+-- anything else: throw exception to the consumer.
+
+Обработка офсетов
+- enable.auto.commit: Если true, смещения консюмера будут периодически автоматически фиксироваться в фоновом режиме.
+- auto.commit.interval.ms: Частота в миллисекундах, с которой смещения консюмера автоматически фиксируются в Kafka, если enable.auto.commit установлен в true.
+
+- session.timeout.ms: Тайм-аут, используемый для обнаружения сбоев консюмера при использовании механизма управления группами Kafka.
+- allow.auto.create.topics default=true
+Безопасность
+- security.protocol: Протокол, используемый для связи с брокерами. Допустимые значения: PLAINTEXT, SSL, SASL_PLAINTEXT, SASL_SSL.
+- ssl.truststore.location: Расположение файла доверенного хранилища.
+- ssl.truststore.password: Пароль для файла доверенного хранилища.
+- sasl.mechanism: Механизм SASL, используемый для клиентских соединений. Допустимые значения: GSSAPI, PLAIN, SCRAM-SHA-256, SCRAM-SHA-512.
+- sasl.jaas.config: Конфигурация JAAS, используемая клиентом Kafka для аутентификации с брокером Kafka.
