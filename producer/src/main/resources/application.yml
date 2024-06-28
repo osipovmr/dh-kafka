@@ -6,3 +6,5 @@ logging:
 spring:
   kafka:
     bootstrap-servers: "kafka:9092"
+number: 1000
+partitions: 1

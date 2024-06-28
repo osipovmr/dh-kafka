@@ -1,6 +1,7 @@
 package osipovmr.producer.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,13 +15,13 @@ import java.util.UUID;
 public class Controller {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-
+    @Value("${number}")
     private int number;
 
     @GetMapping("/start")
     public ResponseEntity<Void> start() {
-        for (int i = 0; i < 1000; i++) {
-            kafkaTemplate.send("osipov", UUID.randomUUID().toString(), "Message number: " + number++);
+        for (int i = 0; i < number; i++) {
+            kafkaTemplate.send("osipov", UUID.randomUUID().toString(), "Message number: " + i);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

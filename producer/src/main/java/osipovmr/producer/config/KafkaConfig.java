@@ -24,6 +24,8 @@ public class KafkaConfig {
 
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
+    @Value(value = "${partitions}")
+    private int partitions;
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
@@ -41,7 +43,12 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic topic1() {
-        return TopicBuilder.name("osipov").build();
+        return TopicBuilder.name("osipov").partitions(partitions).build();
+    }
+
+    @Bean
+    public NewTopic topic2() {
+        return TopicBuilder.name("__consumer_offsets").build();
     }
 
     @Bean

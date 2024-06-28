@@ -13,6 +13,9 @@ services:
       - "8081:8081"
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      PARTITIONS: 1
+      #      PARTITIONS: 2
+      NUMBER: 500
     networks:
       - dh
 
@@ -24,6 +27,20 @@ services:
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
       SPRING_KAFKA_CONSUMER_GROUP_ID: "dh-group-1"
+    networks:
+      - dh
+    depends_on:
+      - postgres
+      - kafka
+  consumer-2:
+    image: osipovmr/dh-kafka-consumer:1
+    container_name: kafka-consumer-2
+    ports:
+      - "8083:8082"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+      SPRING_KAFKA_CONSUMER_GROUP_ID: "dh-group-1"
+    #      SPRING_KAFKA_CONSUMER_GROUP_ID: "dh-group-2"
     networks:
       - dh
     depends_on:
@@ -55,8 +72,8 @@ services:
       KAFKA_ALLOW_AUTO_CREATE_TOPICS: "true"
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_NODE_ID: 1
-      KAFKA_LISTENERS: kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://kafka:9092, CONTROLLER://kafka:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER

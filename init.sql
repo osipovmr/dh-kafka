@@ -1,10 +1,7 @@
-create table if not exists students
+create table if not exists message
 (
-    id      int primary key,
-    name    varchar(50) not null,
-    lessons int         null
+    uuid          uuid primary key,
+    offset_number int          not null,
+    "partition"   int          not null,
+    message       varchar(255) not null
 );
-insert into students (id, name, lessons)
-values (1, 'Adlan', 10),
-       (2, 'Semen', 20),
-       (3, 'Alex', 30);
