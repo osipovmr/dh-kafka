@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,6 +25,12 @@ public class Controller {
                 partition,
                 offset,
                 key,
+                message);
+    }
+
+    @PostMapping("/web")
+    public void web(@RequestBody String message) {
+        log.info("Получено сообщение value: '{}'.",
                 message);
     }
 }

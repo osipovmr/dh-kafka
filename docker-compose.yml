@@ -14,10 +14,6 @@ services:
       SERVER_PORT: 8081
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       TOPIC: 'event'
-      # Задержка в мс
-      # LINGER: 1000
-      #Установка размера пакета в 32 КБ
-      BATCH: 32768
       PARTITIONS: 1
       # At most once  0
       # Продюсер не ждёт подтверждения от брокера Kafka.
