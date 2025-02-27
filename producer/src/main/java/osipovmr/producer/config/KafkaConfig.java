@@ -28,6 +28,10 @@ public class KafkaConfig {
     private int partitions;
     @Value(value = "${batch}")
     private int batch;
+    @Value(value = "${acks}")
+    private String acks;
+    @Value("${topic}")
+    private String topic;
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
@@ -35,6 +39,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.ACKS_CONFIG, acks);
         props.put(ProducerConfig.BATCH_SIZE_CONFIG, batch);
         return new DefaultKafkaProducerFactory<>(props);
     }
@@ -46,7 +51,7 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic topic1() {
-        return TopicBuilder.name("osipov").partitions(partitions).build();
+        return TopicBuilder.name(topic).partitions(partitions).build();
     }
 
     @Bean
