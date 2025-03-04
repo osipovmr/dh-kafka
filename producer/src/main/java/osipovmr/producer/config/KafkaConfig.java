@@ -36,6 +36,8 @@ public class KafkaConfig {
     private String linger;
     @Value("${compression}")
     private String compression;
+    @Value("${replicas}")
+    private int replicas;
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
@@ -57,7 +59,7 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic topic1() {
-        return TopicBuilder.name(topic).partitions(partitions).build();
+        return TopicBuilder.name(topic).partitions(partitions).replicas(replicas).build();
     }
 
     @Bean

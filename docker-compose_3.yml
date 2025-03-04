@@ -1,0 +1,135 @@
+version: '3.0'
+
+networks:
+  dh:
+    driver: bridge
+services:
+  producer:
+    image: osipovmr/dh-kafka-producer:latest
+    container_name: kafka-producer
+    ports:
+      - '8081:8081'
+    environment:
+      SERVER_PORT: 8081
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
+      TOPIC: 'event'
+      PARTITIONS: 1
+      # At most once  0
+      # Продюсер не ждёт подтверждения от брокера Kafka.
+      # Сообщение считается отправленным сразу после попытки отправки.
+      # At least once -1 all
+      # Эта семантика гарантирует, что сообщение будет обработано хотя бы один раз.
+      # Если происходит сбой, сообщение может быть дублировано. Продюсер ждёт подтверждения от всех реплик брокера Kafka.
+      # Exactly once
+      # Эта семантика гарантирует, что сообщение будет обработано строго один раз
+      # enable.idempotence=true:
+      # -1 all
+      ACKS: '0'
+      BATCH: 32768 # 32 КБ
+      LINGER: 10 # задержка в миллисекундах перед отправкой пакета
+      COMPRESSION: 'gzip'
+      REPLICAS: 3
+    networks:
+      - dh
+
+  consumer:
+    image: osipovmr/dh-kafka-consumer:latest
+    container_name: kafka-consumer
+    ports:
+      - '8082:8082'
+    environment:
+      SERVER_PORT: 8082
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
+      SPRING_KAFKA_CONSUMER_GROUP_ID: 'ift'
+      TOPIC: 'event'
+    networks:
+      - dh
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - producer
+  kafka1:
+    image: apache/kafka:latest
+    container_name: kafka1
+    ports:
+      - '9092:9092'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ENABLE_KRAFT: 'yes'
+      KAFKA_NODE_ID: 1
+      KAFKA_KRAFT_CLUSTER_ID: dh-cluster
+      KAFKA_KRAFT_STORAGE_DIR: /var/lib/kafka-storage
+      KAFKA_LISTENERS: PLAINTEXT://kafka1:9092, CONTROLLER://kafka1:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+    volumes:
+      - kafka1-storage:/var/lib/kafka-storage
+    networks:
+      - dh
+
+  kafka2:
+    image: apache/kafka:latest
+    container_name: kafka2
+    ports:
+      - '9094:9092'
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ENABLE_KRAFT: 'yes'
+      KAFKA_NODE_ID: 2
+      KAFKA_KRAFT_CLUSTER_ID: dh-cluster
+      KAFKA_KRAFT_STORAGE_DIR: /var/lib/kafka-storage
+      KAFKA_LISTENERS: PLAINTEXT://kafka2:9092, CONTROLLER://kafka2:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+    volumes:
+      - kafka2-storage:/var/lib/kafka-storage
+    networks:
+      - dh
+
+  kafka3:
+    image: apache/kafka:latest
+    container_name: kafka3
+    ports:
+      - '9096:9092'
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ENABLE_KRAFT: 'yes'
+      KAFKA_NODE_ID: 3
+      KAFKA_KRAFT_CLUSTER_ID: dh-cluster
+      KAFKA_KRAFT_STORAGE_DIR: /var/lib/kafka-storage
+      KAFKA_LISTENERS: PLAINTEXT://kafka3:9092, CONTROLLER://kafka3:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+    volumes:
+      - kafka3-storage:/var/lib/kafka-storage
+    networks:
+      - dh
+
+  ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    ports:
+      - '8080:8080'
+    environment:
+      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: kafka1:9092,kafka2:9092,kafka3:9092
+      KAFKA_CLUSTERS_0_NAME: dh-osipov
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    networks:
+      - dh
+volumes:
+  kafka1-storage:
+  kafka2-storage:
+  kafka3-storage:

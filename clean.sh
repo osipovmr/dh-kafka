@@ -42,4 +42,5 @@ echo "Building image: $consumer_image_name"
 docker image build --platform linux/amd64 -t "$consumer_image_name" "$docker_file_path"
 echo "Image built and tagged successfully."
 cd ..
-docker compose -f docker-compose.yml -p dh-kafka up -d
+#docker compose -f docker-compose.yml -p dh-kafka up -d
+docker compose -f docker-compose_3.yml -p dh-kafka up -d
