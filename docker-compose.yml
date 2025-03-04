@@ -2,8 +2,7 @@ version: '3.0'
 
 networks:
   dh:
-    external: true
-
+    driver: bridge
 services:
   producer:
     image: osipovmr/dh-kafka-producer:latest
@@ -26,6 +25,9 @@ services:
       # enable.idempotence=true:
       # -1 all
       ACKS: '0'
+      BATCH: 32768 # 32 КБ
+      LINGER: 10 # задержка в миллисекундах перед отправкой пакета
+      COMPRESSION: 'gzip'
     networks:
       - dh
 

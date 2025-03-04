@@ -30,6 +30,12 @@ public class KafkaConfig {
     private String acks;
     @Value("${topic}")
     private String topic;
+    @Value("${batch}")
+    private String batchSize;
+    @Value("${linger}")
+    private String linger;
+    @Value("${compression}")
+    private String compression;
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
@@ -38,6 +44,9 @@ public class KafkaConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.ACKS_CONFIG, acks);
+        props.put(ProducerConfig.BATCH_SIZE_CONFIG, batchSize);
+        props.put(ProducerConfig.LINGER_MS_CONFIG, linger);
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, compression);
         return new DefaultKafkaProducerFactory<>(props);
     }
 
