@@ -13,7 +13,7 @@ services:
       SERVER_PORT: 8081
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
       TOPIC: 'event'
-      PARTITIONS: 1
+      PARTITIONS: 3
       # At most once  0
       # Продюсер не ждёт подтверждения от брокера Kafka.
       # Сообщение считается отправленным сразу после попытки отправки.
@@ -32,9 +32,9 @@ services:
     networks:
       - dh
 
-  consumer:
+  consumer1:
     image: osipovmr/dh-kafka-consumer:latest
-    container_name: kafka-consumer
+    container_name: kafka-consumer-1
     ports:
       - '8082:8082'
     environment:
@@ -45,9 +45,34 @@ services:
     networks:
       - dh
     depends_on:
-      - kafka1
-      - kafka2
-      - kafka3
+      - producer
+  consumer2:
+    image: osipovmr/dh-kafka-consumer:latest
+    container_name: kafka-consumer-2
+    ports:
+      - '8083:8082'
+    environment:
+      SERVER_PORT: 8082
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
+      SPRING_KAFKA_CONSUMER_GROUP_ID: 'ift'
+      TOPIC: 'event'
+    networks:
+      - dh
+    depends_on:
+      - producer
+  consumer3:
+    image: osipovmr/dh-kafka-consumer:latest
+    container_name: kafka-consumer-3
+    ports:
+      - '8084:8082'
+    environment:
+      SERVER_PORT: 8082
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: 'kafka1:9092,kafka2:9092,kafka3:9092'
+      SPRING_KAFKA_CONSUMER_GROUP_ID: 'ift'
+      TOPIC: 'event'
+    networks:
+      - dh
+    depends_on:
       - producer
   kafka1:
     image: apache/kafka:latest
@@ -68,6 +93,11 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
     volumes:
       - kafka1-storage:/var/lib/kafka-storage
+    depends_on:
+      - consumer1
+      - consumer2
+      - consumer3
+      - producer
     networks:
       - dh
 
@@ -90,6 +120,11 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
     volumes:
       - kafka2-storage:/var/lib/kafka-storage
+    depends_on:
+      - consumer1
+      - consumer2
+      - consumer3
+      - producer
     networks:
       - dh
 
@@ -112,6 +147,11 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
     volumes:
       - kafka3-storage:/var/lib/kafka-storage
+    depends_on:
+      - consumer1
+      - consumer2
+      - consumer3
+      - producer
     networks:
       - dh
 
@@ -127,6 +167,10 @@ services:
       - kafka1
       - kafka2
       - kafka3
+      - consumer1
+      - consumer2
+      - consumer3
+      - producer
     networks:
       - dh
 volumes:

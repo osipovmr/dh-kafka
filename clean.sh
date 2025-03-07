@@ -6,6 +6,9 @@ producer_image_name="osipovmr/dh-kafka-producer:latest"
 producer_container_name="kafka-producer"
 consumer_image_name="osipovmr/dh-kafka-consumer:latest"
 consumer_container_name="kafka-consumer"
+consumer_container_name="kafka-consumer-1"
+consumer_container_name="kafka-consumer-2"
+consumer_container_name="kafka-consumer-3"
 docker_file_path="."
 
 # Stop and remove any containers with the specified name

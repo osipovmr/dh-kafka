@@ -1,7 +1,6 @@
 package osipovmr.producer.config;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
@@ -62,15 +60,15 @@ public class KafkaConfig {
         return TopicBuilder.name(topic).partitions(partitions).replicas(replicas).build();
     }
 
-    @Bean
-    public NewTopic topic2() {
-        return TopicBuilder.name("__consumer_offsets").build();
-    }
+//    @Bean
+//    public NewTopic topic2() {
+//        return TopicBuilder.name("__consumer_offsets").build();
+//    }
 
-    @Bean
-    KafkaAdmin admin() {
-        Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        return new KafkaAdmin(configs);
-    }
+//    @Bean
+//    KafkaAdmin admin() {
+//        Map<String, Object> configs = new HashMap<>();
+//        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+//        return new KafkaAdmin(configs);
+//    }
 }
