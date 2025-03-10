@@ -36,7 +36,7 @@ public class Controller {
         RestTemplate restTemplate = new RestTemplate();
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < numberOfMessage; i++) {
-            restTemplate.postForEntity("http://consumer:8082/web", new HttpEntity<>("Message number: " + i, getHeaders()), Void.class);
+            restTemplate.postForEntity("http://consumer1:8082/web", new HttpEntity<>("Message number: " + i, getHeaders()), Void.class);
         }
         long endTime = System.currentTimeMillis();
         long executionTime = endTime - startTime;
